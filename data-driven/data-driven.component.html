@@ -24,7 +24,7 @@
   </div>
   <div formArrayName="hobbies">
     <h3>Hobbies</h3>
-    <div class="form-group" *ngFor="let hobby of myForm.get('hobbies').controls; let i = index">
+    <div class="form-group" *ngFor="let hobby of myForm.get('hobbies')['controls']; let i = index">
       <input type="text" class="form-control" formControlName="{{i}}">
     </div>
   </div>
