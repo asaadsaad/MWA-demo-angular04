@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -6,20 +6,20 @@ import {
   FormBuilder,
   FormArray
 } from "@angular/forms";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 
 @Component({
   selector: 'data-driven',
   templateUrl: 'data-driven.component.html'
 })
-export class DataDrivenComponent {
+export class DataDrivenComponent implements OnDestroy {
   myForm: FormGroup;
   hobbiesArray: FormArray;
   genders: string[] = [
     'male',
     'female'
   ];
-
+  private subscription: Subscription | undefined;
   constructor(private formBuilder: FormBuilder) {
     // this.myForm = new FormGroup({
     //   'userData': new FormGroup({
@@ -37,7 +37,7 @@ export class DataDrivenComponent {
     // });
 
     this.myForm = formBuilder.group({
-      'username': ['Asaad', [Validators.required, this.exampleValidator]],
+      'username': ['Asaad', Validators.compose([Validators.required, this.exampleValidator])],
       'email': ['', [
         Validators.required,
         Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
@@ -45,12 +45,12 @@ export class DataDrivenComponent {
       'password': ['', Validators.required],
       'gender': ['male'],
       'hobbies': formBuilder.array([
-        ['Cooking', Validators.required, this.asyncExampleValidator]
+        ['Cooking', Validators.compose([Validators.required, this.asyncExampleValidator.bind(this)])]
       ])
     });
     this.hobbiesArray = this.myForm.get('hobbies') as FormArray;
 
-    this.myForm.valueChanges.subscribe(
+    this.subscription = this.myForm?.get('username')?.statusChanges.subscribe(
       (data: any) => console.log(data)
     );
   }
@@ -74,6 +74,7 @@ export class DataDrivenComponent {
     const promise = new Promise<any>(
       (resolve, reject) => {
         setTimeout(() => {
+          this.myForm.get('email')?.setValue('asaad@miu.edu')
           if (control.value === 'Example') {
             resolve({ 'invalid': true });
           } else {
@@ -85,4 +86,7 @@ export class DataDrivenComponent {
     return promise;
   }
 
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe()
+  }
 }
