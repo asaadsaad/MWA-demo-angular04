@@ -42,7 +42,7 @@ export class DataDrivenComponent implements OnDestroy {
       'password': ['', Validators.required],
       'gender': ['male'],
       'hobbies': formBuilder.array([
-        ['Cooking', null, this.asyncValidator.bind(this)]
+        ['Cooking', null, this.asyncValidator.bind(this)] // default value, sync validators, async validators
       ])
     });
     this.hobbiesArray = this.myForm.get('hobbies') as FormArray;
