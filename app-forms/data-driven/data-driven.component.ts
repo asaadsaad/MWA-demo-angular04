@@ -6,7 +6,7 @@ import {
   FormBuilder,
   FormArray
 } from "@angular/forms";
-import { Observable, Subscription } from "rxjs";
+import { Observable, Subscription, of } from "rxjs";
 
 @Component({
   selector: 'data-driven',
@@ -37,15 +37,12 @@ export class DataDrivenComponent implements OnDestroy {
     // });
 
     this.myForm = formBuilder.group({
-      'username': ['Asaad', Validators.compose([Validators.required, this.exampleValidator])],
-      'email': ['', [
-        Validators.required,
-        Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-      ]],
+      'username': ['', Validators.compose([Validators.required, this.notAsaadValidator])],
+      'email': ['', Validators.compose([Validators.required, Validators.email])],,
       'password': ['', Validators.required],
       'gender': ['male'],
       'hobbies': formBuilder.array([
-        ['Cooking', Validators.compose([Validators.required, this.asyncExampleValidator.bind(this)])]
+        ['Cooking', null, this.asyncValidator.bind(this)]
       ])
     });
     this.hobbiesArray = this.myForm.get('hobbies') as FormArray;
@@ -56,34 +53,26 @@ export class DataDrivenComponent implements OnDestroy {
   }
 
   onAddHobby() {
-    (<FormArray>this.myForm.controls['hobbies']).push(new FormControl('', Validators.compose([Validators.required, this.asyncExampleValidator])));
+    (<FormArray>this.myForm.controls['hobbies']).push(new FormControl('')));
   }
 
   onSubmit() {
     console.log(this.myForm.value);
   }
 
-  exampleValidator(control: FormControl): { [s: string]: boolean } | null {
+  notAsaadValidator(control: FormControl): { [s: string]: boolean } | null {
     if (control.value === 'Example') {
       return { example: true };
     }
     return null;
   }
 
-  asyncExampleValidator(control: FormControl): Promise<any> | Observable<any> {
-    const promise = new Promise<any>(
-      (resolve, reject) => {
-        setTimeout(() => {
-          this.myForm.get('email')?.setValue('asaad@miu.edu')
-          if (control.value === 'Example') {
-            resolve({ 'invalid': true });
-          } else {
-            resolve(null);
-          }
-        }, 3000);
-      }
-    );
-    return promise;
+  asyncValidator(control: FormControl): Promise<any> | Observable<any> {
+       if (control.value === 'asaadsaad') {
+      return of({ example: true });
+    }
+    return of(null);
+  }
   }
 
   ngOnDestroy(): void {
