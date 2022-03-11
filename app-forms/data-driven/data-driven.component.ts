@@ -61,17 +61,27 @@ export class DataDrivenComponent implements OnDestroy {
   }
 
   notAsaadValidator(control: FormControl): { [s: string]: boolean } | null {
-    if (control.value === 'Example') {
+    if (control.value === 'asaadsaad') {
       return { example: true };
     }
     return null;
   }
 
-  asyncValidator(control: FormControl): Promise<any> | Observable<any> {
-    if (control.value === 'asaadsaad') {
-      return of({ example: true });
-    }
-    return of(null);
+  // asyncValidator(control: FormControl): Promise<any> | Observable<any> {
+  //   if (control.value === 'asaadsaad') {
+  //     return of({ example: true });
+  //   }
+  //   return of(null);
+  // }
+  
+    asyncValidator(control: FormControl): Promise<any> | Observable<any> {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        // this.myForm.get().disable()   fail;
+        if (control.value === 'asaadsaad') resolve({ example: true }) // invalid
+        resolve(null) // valid
+      }, 5000);
+    })
   }
 
 
