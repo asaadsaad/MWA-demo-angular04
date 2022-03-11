@@ -38,7 +38,7 @@ export class DataDrivenComponent implements OnDestroy {
 
     this.myForm = formBuilder.group({
       'username': ['', Validators.compose([Validators.required, this.notAsaadValidator])],
-      'email': ['', Validators.compose([Validators.required, Validators.email])],,
+      'email': ['', Validators.compose([Validators.required, Validators.email])],
       'password': ['', Validators.required],
       'gender': ['male'],
       'hobbies': formBuilder.array([
@@ -53,7 +53,7 @@ export class DataDrivenComponent implements OnDestroy {
   }
 
   onAddHobby() {
-    (<FormArray>this.myForm.controls['hobbies']).push(new FormControl('')));
+    (<FormArray>this.myForm.controls['hobbies']).push(new FormControl(''));
   }
 
   onSubmit() {
@@ -68,12 +68,12 @@ export class DataDrivenComponent implements OnDestroy {
   }
 
   asyncValidator(control: FormControl): Promise<any> | Observable<any> {
-       if (control.value === 'asaadsaad') {
+    if (control.value === 'asaadsaad') {
       return of({ example: true });
     }
     return of(null);
   }
-  }
+
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe()
